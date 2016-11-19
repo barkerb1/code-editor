@@ -1,0 +1,328 @@
+<script src="../codemirror/lib/codemirror.js"></script>
+<script src="../codemirror/mode/python/python.js"></script>
+<script src="../codemirror/mode/ruby/ruby.js"></script>
+<script src="../codemirror/mode/php/php.js"></script>
+<script src="../codemirror/mode/pascal/pascal.js"></script>
+<script src="../codemirror/mode/sql/sql.js"></script>
+<script src="../codemirror/mode/clike/clike.js"></script>
+<script src="../codemirror/mode/xml/xml.js"></script>
+<script src="../codemirror/mode/javascript/javascript.js"></script>
+<script src="../codemirror/mode/css/css.js"></script>
+<script src="../codemirror/mode/vbscript/vbscript.js"></script>
+<script src="../codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="../codemirror/mode/apl/apl.js"></script>
+<script src="../codemirror/mode/asciiarmor/asciiarmor.js"></script>
+<script src="../codemirror/mode/markdown/markdown.js"></script>
+<script src="../codemirror/mode/clojure/clojure.js"></script>
+<script src="../codemirror/mode/cmake/cmake.js"></script>
+<script src="../codemirror/mode/dart/dart.js"></script>
+<script src="../codemirror/mode/fortran/fortran.js"></script>
+<script src="../codemirror/mode/haskell/haskell.js"></script>
+<script src="../codemirror/mode/jade/jade.js"></script>
+<script src="../codemirror/mode/sass/sass.js"></script>
+<script src="../codemirror/mode/shell/shell.js"></script>
+<script src="../codemirror/mode/xml/xml.js"></script>
+<script src="../codemirror/mode/yaml/yaml.js"></script>
+<script src="../codemirror/addon/lint/lint.js"></script>
+<script src="../codemirror/addon/lint/javascript-lint.js"></script>
+<script src="../codemirror/addon/fold/foldcode.js"></script>
+<script src="../codemirror/addon/fold/foldgutter.js"></script>
+<script src="../codemirror/addon/fold/brace-fold.js"></script>
+<script src="../codemirror/addon/fold/xml-fold.js"></script>
+<script src="../codemirror/addon/fold/markdown-fold.js"></script>
+<script src="../codemirror/addon/fold/comment-fold.js"></script>
+<script src="../codemirror/addon/search/searchcursor.js"></script>
+<script src="../jshint/dist/jshint.js"></script>
+<script src="../codemirror-formating/formatting.js"></script>
+
+<link href="../codemirror/addon/lint/lint.css" rel="stylesheet">
+<link href="../codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="../codemirror/theme/ambiance.css" rel="stylesheet">
+<link href="../codemirror/theme/ambiance-mobile.css" rel="stylesheet">
+<link href="../codemirror/theme/blackboard.css" rel="stylesheet">
+<link href="../codemirror/theme/cobalt.css" rel="stylesheet">
+<link href="../codemirror/theme/eclipse.css" rel="stylesheet">
+<link href="../codemirror/theme/elegant.css" rel="stylesheet">
+<link href="../codemirror/theme/erlang-dark.css" rel="stylesheet">
+<link href="../codemirror/theme/lesser-dark.css" rel="stylesheet">
+<link href="../codemirror/theme/midnight.css" rel="stylesheet">
+<link href="../codemirror/theme/monokai.css" rel="stylesheet">
+<link href="../codemirror/theme/neat.css" rel="stylesheet">
+<link href="../codemirror/theme/night.css" rel="stylesheet">
+<link href="../codemirror/theme/rubyblue.css" rel="stylesheet">
+<link href="../codemirror/theme/solarized.css" rel="stylesheet">
+<link href="../codemirror/theme/tomorrow-night-bright.css" rel="stylesheet">
+<link href="../codemirror/theme/twilight.css" rel="stylesheet">
+<link href="../codemirror/theme/vibrant-ink.css" rel="stylesheet">
+<link href="../codemirror/theme/xq-dark.css" rel="stylesheet">
+<link href="../codemirror/theme/xq-light.css" rel="stylesheet">
+<link href="readonly.css" rel="stylesheet">
+<link href="../codemirror/addon/fold/foldgutter.css" rel="stylesheet">
+<link href="../fontawesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/editor-icons.html">
+<link rel="import" href="../toggle-icon/toggle-icon.html">
+
+<!--
+    `code-editor`
+
+	@demo demo/index.html
+-->
+
+<dom-module id="code-editor">
+  <style is="custom-style">
+
+    #wrapper {
+      position:relative;
+      border: 1px solid #a1a1a1;
+      width: 100%;
+      height: 100%;
+    }
+
+    #content {
+      display: none;
+    }
+
+    .red-green {
+      --toggle-icon: {
+        color: var(--paper-red-500);
+        transform: rotate(90deg);
+      };
+      --toggle-icon-active: {
+        color: var(--paper-green-500);
+        transform: rotate(0deg);
+      };
+    }
+
+    .day-night {
+      --toggle-icon: {
+        color: #1689f3;
+      };
+      --toggle-icon-active: {
+        color: #202020;
+      };
+    }
+    #controls {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    paper-icon-button.color {
+      /*color: #1689f3;*/
+    }
+    #dragbar {
+      width:100%;
+      height: 10px;
+      cursor: row-resize;
+      border-top: 2px solid grey;
+    }
+    #handles {
+      width:50px;
+      height: 10px;
+      margin: 0 auto;
+    }
+
+    iron-icon.handleup {
+      float: left;
+      margin-top: -5px;
+      padding: 0px;
+      color: #686868;
+    }
+    iron-icon.handledown {
+      float: right;
+      margin-top: -5px;
+      padding: 0px;
+      color: #686868;
+    }
+
+  </style>
+
+  <template>
+
+    <div id="wrapper">
+      <div id="controls">
+        <paper-icon-button disabled="{{!editable}}" on-tap="autoFormatSelection" icon="editor:format-align-center"
+                           class="color" title="Format"></paper-icon-button>
+        <paper-icon-button disabled="{{!editable}}" on-tap="commentSelection" icon="icons:settings-ethernet"
+                           class="color" title="Comment"></paper-icon-button>
+        <paper-icon-button disabled="{{!editable}}" on-tap="uncommentSelection" icon="icons:code"
+                           class="color" title="Uncomment"></paper-icon-button>
+        <toggle-icon on-tap="edit" icon="icons:create" animation="rotate" rotation="0" class="red-green"
+                     title="Editable" checked="{{editable}}"></toggle-icon>
+        <toggle-icon disabled="{{!editable}}" on-tap="changeTheme" icon="icons:lightbulb-outline"
+                     animation="flip-horizontal" class="day-night" title="Lights"></toggle-icon>
+      </div>
+
+    </div>
+    <div id="dragbar" on-track="handleResize">
+      <div id="handles">
+        <iron-icon class="handleup" icon="icons:arrow-drop-down"></iron-icon>
+        <iron-icon class="handledown" icon="icons:arrow-drop-up"></iron-icon>
+      </div>
+    </div>
+
+
+
+    <div id="content">
+      <content></content>
+    </div>
+  </template>
+
+  <script>
+
+      Polymer({
+          is: 'code-editor',
+
+          properties: {
+              value: {
+                  type: String,
+                  value: null
+              },
+              tabSize: {
+                  type: Number,
+                  value: 2
+              },
+              mode: {
+                  type: String,
+                  value: 'htmlmixed'
+              },
+              theme: {
+                  type: String,
+                  value: 'monokai'
+              },
+              lineNumbers: {
+                  type: Boolean,
+                  value: true
+              },
+              rows: {
+                  type: Number,
+                  value: 25
+              },
+              cols: {
+                  type: Number,
+                  value: 85
+              },
+              lint: {
+                  type: Boolean,
+                  value: true
+              },
+              gutters: {
+                  type: Array,
+                  value: ["CodeMirror-lint-markers"]
+              },
+              mirror: {
+                  type: Object
+              },
+              editable: {
+                  type: Boolean,
+                  value: false
+              },
+              width: {
+                  type: Number
+              },
+              height: {
+                  type: Number
+              }
+          },
+          handleResize: function(e) {
+              switch(e.detail.state) {
+                  case 'start':
+                      this.width = this.$.wrapper.getBoundingClientRect().width;
+                      this.height = this.$.wrapper.getBoundingClientRect().height;
+                      break;
+                  case 'track':
+                      this.mirror.setSize(this.width-5, this.height+e.detail.dy);
+                      break;
+                  case 'end':
+                      break;
+              }
+          },
+
+          // Element Lifecycle
+
+          ready: function () {
+              if (!this.value) {
+                  this.value = this.textContent.trim();
+              }
+              this.mirror = CodeMirror(this.$.wrapper, {
+                  value: this.value,
+                  mode: this.mode,
+                  theme: this.theme,
+                  lineNumbers: this.lineNumbers,
+                  lint: this.lint,
+                  gutters: this.gutters,
+                  tabSize: this.tabSize
+              });
+              console.log(this.editable);
+              if (!this.editable) {
+                  this.lock();
+              }
+              this.focus();
+              this.mirror.refresh();
+          },
+          attached: function () {
+              var els = document.querySelectorAll('code-mirror');
+              for (var el in els) {
+                  el = parseInt(el, 10);
+                  if (!isNaN(el)) {
+                      els[el].mirror.refresh();
+                  }
+              }
+          },
+          focus: function () {
+              this.mirror.focus();
+          },
+          getSelectedRange: function () {
+              return {from: this.mirror.getCursor(true), to: this.mirror.getCursor(false)};
+          },
+          autoFormatSelection: function () {
+              if (!this.mirror.getOption("readOnly")) {
+                  var range = this.getSelectedRange();
+                  this.mirror.autoFormatRange(range.from, range.to);
+              }
+          },
+          commentSelection: function () {
+              if (!this.mirror.getOption("readOnly")) {
+                  var range = this.getSelectedRange();
+                  this.mirror.commentRange(true, range.from, range.to);
+              }
+          },
+          uncommentSelection: function () {
+              if (!this.mirror.getOption("readOnly")) {
+                  var range = this.getSelectedRange();
+                  this.mirror.commentRange(false, range.from, range.to);
+              }
+          },
+          lock: function () {
+              console.log("Locked");
+              this.mirror.setOption("readOnly", true);
+              this.mirror.setOption("theme", "readonly");
+          },
+          unLock: function () {
+              console.log("unLocked");
+              this.mirror.setOption("readOnly", false);
+              this.mirror.setOption("theme", this.theme);
+          },
+          edit: function (e) {
+              console.log(e);
+              if (this.mirror.getOption("readOnly"))
+                  this.unLock();
+              else
+                  this.lock();
+          },
+          changeTheme: function () {
+              if (this.editable) {
+                  if (this.mirror.getOption("theme") == this.theme) {
+                      this.mirror.setOption("theme", "twilight");
+                  }
+                  else {
+                      this.mirror.setOption("theme", this.theme);
+                  }
+              }
+          }
+      });
+
+  </script>
+</dom-module>

@@ -1,0 +1,43 @@
+/* READONLY THEME */
+
+.cm-s-readonly .cm-header {color: grey;}
+.cm-s-readonly .cm-quote {color: grey;}
+.cm-negative {color: grey;}
+.cm-positive {color: grey;}
+.cm-header, .cm-strong {font-weight: bold;}
+.cm-em {font-style: italic;}
+.cm-link {text-decoration: underline;}
+.cm-strikethrough {text-decoration: line-through;}
+
+.cm-s-readonly .cm-keyword {color: grey;}
+.cm-s-readonly .cm-atom {color: grey;}
+.cm-s-readonly .cm-number {color: grey;}
+.cm-s-readonly .cm-def {color: grey;}
+.cm-s-readonly .cm-variable,
+.cm-s-readonly .cm-punctuation,
+.cm-s-readonly .cm-property,
+.cm-s-readonly .cm-operator {color: grey;}
+.cm-s-readonly .cm-variable-2 {color: grey;}
+.cm-s-readonly .cm-variable-3 {color: grey;}
+.cm-s-readonly .cm-comment {color: grey;}
+.cm-s-readonly .cm-string {color: grey;}
+.cm-s-readonly .cm-string-2 {color: grey;}
+.cm-s-readonly .cm-meta {color: grey;}
+.cm-s-readonly .cm-qualifier {color: grey;}
+.cm-s-readonly .cm-builtin {color: grey;}
+.cm-s-readonly .cm-bracket {color: grey;}
+.cm-s-readonly .cm-tag {color: grey;}
+.cm-s-readonly .cm-attribute {color: grey;}
+.cm-s-readonly .cm-hr {color: grey;}
+.cm-s-readonly .cm-link {color: grey;}
+
+.cm-s-readonly .cm-error {color: grey;}
+.cm-invalidchar {color: grey;}
+
+.CodeMirror-composing { border-bottom: 2px solid; }
+
+.cm-s-readonly .CodeMirror-gutters { background: #f7f7f7; border-right: 1px solid #ddd; }
+.cm-s-readonly .CodeMirror-guttermarker { color: white; }
+.cm-s-readonly .CodeMirror-guttermarker-subtle { color: #aaa; }
+.cm-s-readonly .CodeMirror-linenumber { color: #aaa; }
+.cm-s-readonly .CodeMirror-cursor { border-left: 1px solid white !important; }

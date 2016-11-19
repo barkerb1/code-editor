@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <title>code-editor demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+  <link rel="import" href="../code-editor.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+  </style>
+</head>
+<body>
+
+<div class="vertical-section-container centered" style="max-width:700px; height:700px; ">
+  <h3>Basic code-editor Demo</h3>
+  <demo-snippet>
+    <template>
+
+      <code-editor mode="javascript" theme="default" editable>
+        var i = 1 //no semicolon will cause error
+        var i = 2;
+        while(true){
+        if(i == 1){
+        console.log("Working");
+        }
+        else{
+        console.log("Still have bugs to fix")
+        }
+        //} //no bracket will error
+      </code-editor>
+
+    </template>
+  </demo-snippet>
+  <h3>Python Demo</h3>
+  <demo-snippet>
+    <template>
+
+      <code-editor mode="python" theme="default" editable>
+
+
+        import re
+        for test_string in ['555-1212', 'ILL-EGAL']:
+        if re.match(r'^\d{3}-\d{4}$', test_string):
+        print test_string, 'is a valid US local phone number'
+        else:
+        print test_string, 'rejected'
+      </code-editor>
+
+    </template>
+  </demo-snippet>
+  <h3>Read-only Java</h3>
+  <demo-snippet>
+    <template>
+
+      <code-editor mode="text/x-java" theme="default">
+        public class HelloWorldExample{
+
+        public static void main(String args[]){
+
+        System.out.println("Hello World !");
+
+        }
+
+        }
+      </code-editor>
+
+    </template>
+  </demo-snippet>
+
+</div>
+
+</body>
+</html>
